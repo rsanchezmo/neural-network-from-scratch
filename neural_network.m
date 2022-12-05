@@ -1,4 +1,5 @@
 %% LOAD THE DATASET
+close all; clear;
 load('data.mat');
 
 % The dataset size is:
@@ -14,10 +15,11 @@ displayData(sel); % this function is property of machineLearningCourse on Course
 
 %% DEFINING THE NEURAL NETWORK ARCHITECTURE
 
-input_layer_size  = 400;  % 20x20 Input Images of Digits
+N = 20; 
+input_layer_size  = N*N;  % 20x20 Input Images of Digits
 num_labels = 10;          % 10 labels, from 1 to 10 (note that we have mapped "0" to label 10)
 
-layer_sizes = [input_layer_size, 40 ,num_labels];
+layer_sizes = [input_layer_size, 40, num_labels];
 
 % we need to create the y_new that is a matrix with size of m*num_labels
 y_new = (1:10) == y;
@@ -29,7 +31,7 @@ end
 
 % Weight regularization parameter and learning rate
 lambda = 1;
-alfa = 1;
+alfa = 1e-1;
 
 maxIter = 1000;
 
@@ -38,8 +40,8 @@ count = [];
 precisionT = [];
 weights = initial_weights;
 figure;
-ax1 = subplot(2,1,1);
-ax2 = subplot(2,1,2);
+ax1 = subplot(2,1,1); ax1.YGrid = "on"; ax1.XGrid = "on";
+ax2 = subplot(2,1,2); ax2.YGrid = "on"; ax2.XGrid = "on";
 
 tic; 
 for i = 1:maxIter
@@ -48,18 +50,18 @@ for i = 1:maxIter
     if mod(i,25) == 0
         loss = [loss;J];
         count = [count;i];
-        plot(ax1,count, loss, 'LineWidth', 2);
-        title(ax1,'COST EVOLUTION');
+        plot(ax1,count, loss, 'LineWidth', 2); ax1.YGrid = "on"; ax1.XGrid = "on";
+        title(ax1,'Loss EVOLUTION');
         xlabel(ax1,'Iterations');
-        ylabel(ax1,'Cost function')
+        ylabel(ax1,'Loss function')
         pred = predict(weights, X, layer_sizes);
         precision = mean(double(pred == y)) * 100;
         precisionT = [precisionT;precision];
-        plot(ax2,count, precisionT, 'LineWidth', 2);
-        title(ax2,'PRECISION EVOLUTION');
+        plot(ax2,count, precisionT, 'LineWidth', 2); ax2.YGrid = "on"; ax2.XGrid = "on";
+        title(ax2,'Accuracy EVOLUTION');
         xlabel(ax2,'Iterations');
-        ylabel(ax2,'Precision');
-        disp(['Iteration #: ' num2str(i) ' / ' num2str(maxIter) ' | Cost J: ' num2str(J) ' | Precission: ' ...
+        ylabel(ax2,'Accuracy');
+        disp(['Iteration #: ' num2str(i) ' / ' num2str(maxIter) ' | Loss J: ' num2str(J) ' | Accuracy: ' ...
                 num2str(precision)]);
         drawnow();
     end
